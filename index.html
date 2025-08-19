@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ihab Mokhtar - IT Manager & DevOps Engineer Portfolio</title>
+    <title>Ihab Mokhtar - IT Manager Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -34,6 +36,32 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
+        }
+
+        /* Enhanced PDF Download Button */
+        .pdf-download-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1001;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pdf-download-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(245, 87, 108, 0.6);
         }
 
         /* Navigation */
@@ -106,17 +134,16 @@
             width: 100%;
         }
 
-        /* Hero Section */
+        /* Hero Section - Enhanced Layout */
         .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            padding: 140px 0 80px;
             background: var(--primary-gradient);
             color: white;
             position: relative;
             overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
         }
 
         .hero::before {
@@ -140,6 +167,8 @@
             z-index: 2;
             position: relative;
             animation: fadeInUp 1s ease-out;
+            width: 100%;
+            text-align: center;
         }
 
         @keyframes fadeInUp {
@@ -153,23 +182,8 @@
             }
         }
 
-        .profile-photo {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            border: 6px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-            margin: 0 auto 2rem;
-            object-fit: cover;
-            animation: profileFloat 6s ease-in-out infinite alternate;
-        }
-
-        @keyframes profileFloat {
-            from { transform: translateY(0px) scale(1); }
-            to { transform: translateY(-20px) scale(1.02); }
-        }
-
-        .hero h1 {
+        /* Enhanced Hero Name - Centered Above Everything */
+        .hero-name {
             font-size: 4rem;
             margin-bottom: 1rem;
             background: linear-gradient(45deg, #FFD700, #FFA500, #FF6B6B);
@@ -178,6 +192,68 @@
             background-clip: text;
             font-weight: 800;
             text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        /* Enhanced Hero Layout - Side by Side */
+        .hero-main {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Enhanced Photo Container - Rectangular Frame */
+        .profile-photo-container {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-photo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF6B6B);
+        }
+
+        .profile-photo-container:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.4);
+            border: 3px solid rgba(255, 215, 0, 0.8);
+        }
+
+        /* Rectangular Photo Frame */
+        .profile-photo {
+            width: 300px;
+            height: 380px;
+            border-radius: 15px;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hero-text {
+            text-align: left;
         }
 
         .hero .title {
@@ -196,39 +272,92 @@
         }
 
         .hero .description {
-            font-size: 1.2rem;
-            max-width: 900px;
-            margin: 0 auto 3rem;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
             opacity: 0.9;
             line-height: 1.8;
         }
 
-        .contact-info {
-            display: flex;
-            justify-content: center;
+        /* Enhanced Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
-            flex-wrap: wrap;
+            margin: 2rem 0 3rem 0;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 1.2rem 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            font-size: 1rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+            font-weight: 700;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .action-btn.primary:hover {
+            background: linear-gradient(45deg, #FFA500, #FF6B6B);
+            color: white;
+            border: 2px solid rgba(255, 107, 107, 0.5);
+        }
+
+        /* Enhanced Contact Info Grid */
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
             margin-top: 2rem;
         }
 
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 1.5rem;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 50px;
+            border-radius: 15px;
             backdrop-filter: blur(15px);
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.3);
             text-decoration: none;
             color: white;
+            justify-content: center;
+            text-align: center;
         }
 
         .contact-item:hover {
-            transform: translateY(-5px) scale(1.05);
+            transform: translateY(-5px) scale(1.03);
             background: rgba(255, 255, 255, 0.25);
             box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .contact-item i {
+            font-size: 1.2rem;
+            min-width: 20px;
         }
 
         /* Sections */
@@ -262,7 +391,7 @@
             border-radius: 2px;
         }
 
-        /* Professional Summary */
+        /* Professional Summary - Fixed Word Issue */
         .summary-card {
             background: white;
             padding: 4rem;
@@ -291,89 +420,6 @@
             text-align: center;
             max-width: 1000px;
             margin: 0 auto;
-        }
-
-        /* Internship Journey */
-        .internship-timeline {
-            position: relative;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .internship-timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 100%;
-            background: var(--success-gradient);
-            border-radius: 2px;
-        }
-
-        .internship-item {
-            position: relative;
-            margin: 3rem 0;
-        }
-
-        .internship-content {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: var(--card-shadow);
-            width: 45%;
-            transition: all 0.4s ease;
-            position: relative;
-            border: 1px solid rgba(79, 172, 254, 0.2);
-        }
-
-        .internship-content:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: var(--hover-shadow);
-        }
-
-        .internship-item:nth-child(odd) .internship-content {
-            margin-left: 0;
-            border-left: 5px solid #4facfe;
-        }
-
-        .internship-item:nth-child(even) .internship-content {
-            margin-left: 55%;
-            border-right: 5px solid #00f2fe;
-        }
-
-        .internship-dot {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 20px;
-            background: var(--success-gradient);
-            border-radius: 50%;
-            top: 50%;
-            margin-top: -10px;
-            border: 4px solid white;
-            box-shadow: 0 0 20px rgba(79, 172, 254, 0.6);
-        }
-
-        .internship-title {
-            color: #4facfe;
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .internship-company {
-            color: #666;
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-            font-weight: 500;
-        }
-
-        .internship-description {
-            color: #555;
-            line-height: 1.7;
-            font-size: 1rem;
         }
 
         /* Experience Timeline */
@@ -469,7 +515,7 @@
             font-weight: 600;
         }
 
-        /* Projects Grid */
+        /* Projects Grid - Enhanced */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
@@ -542,6 +588,12 @@
             margin-bottom: 1.5rem;
         }
 
+        .project-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .project-impact {
             color: #4facfe;
             font-weight: 600;
@@ -551,7 +603,27 @@
             gap: 0.5rem;
         }
 
-        /* Skills Tabs Section */
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border: 2px solid #333;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .github-link:hover {
+            background: #333;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Skills Tabs Section - Enhanced with Icons */
         .skills-tabs {
             margin-top: 4rem;
         }
@@ -574,6 +646,9 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .tab-btn.active,
@@ -655,6 +730,9 @@
         .skill-name {
             font-weight: 600;
             color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .skill-level {
@@ -664,6 +742,206 @@
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
+        }
+
+        /* Certifications with Tabs - No Images for Official Certs */
+        .certifications-tabs {
+            margin-top: 4rem;
+        }
+
+        .cert-tabs-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .cert-tab-btn {
+            padding: 1rem 2rem;
+            background: white;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50px;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .cert-tab-btn.active,
+        .cert-tab-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .cert-tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .cert-tab-content.active {
+            display: block;
+        }
+
+        .certifications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .certification-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .certification-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .certification-card.certified::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .certification-card.online-course::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--warning-gradient);
+        }
+
+        .certification-card.aws-academy::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+        }
+
+        .certification-card.internship::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, #8B5CF6, #EC4899);
+        }
+
+        .cert-icon {
+            width: 90px;
+            height: 90px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .certification-card.certified .cert-icon {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .certification-card.aws-academy .cert-icon {
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+        }
+
+        .certification-card.internship .cert-icon {
+            background: linear-gradient(45deg, #8B5CF6, #EC4899);
+        }
+
+        .certification-card.certified .cert-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .certification-card.online-course .cert-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--warning-gradient);
+            color: #333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .certification-card.aws-academy .cert-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .certification-card.internship .cert-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #8B5CF6, #EC4899);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .cert-name {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .cert-provider {
+            color: #666;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .cert-year {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            font-style: italic;
         }
 
         /* Achievements Section */
@@ -710,76 +988,6 @@
             font-size: 1.3rem;
             opacity: 0.95;
             font-weight: 500;
-        }
-
-        /* Certifications */
-        .certifications-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
-            margin-top: 4rem;
-        }
-
-        .certification-card {
-            background: white;
-            padding: 3rem;
-            border-radius: 25px;
-            box-shadow: var(--card-shadow);
-            text-align: center;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(102, 126, 234, 0.1);
-        }
-
-        .certification-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: var(--hover-shadow);
-        }
-
-        .certification-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: var(--warning-gradient);
-        }
-
-        .cert-icon {
-            width: 90px;
-            height: 90px;
-            background: var(--primary-gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 2rem;
-            color: white;
-            font-size: 2rem;
-            font-weight: bold;
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
-        }
-
-        .cert-name {
-            color: #333;
-            font-weight: 700;
-            margin-bottom: 0.8rem;
-            font-size: 1.2rem;
-        }
-
-        .cert-provider {
-            color: #666;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .cert-year {
-            color: #888;
-            font-size: 0.9rem;
-            margin-top: 0.8rem;
-            font-style: italic;
         }
 
         /* Footer */
@@ -878,8 +1086,18 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero h1 {
+            .hero-name {
                 font-size: 2.8rem;
+            }
+            
+            .hero-main {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            .hero-text {
+                text-align: center;
             }
             
             .hero .title {
@@ -890,7 +1108,22 @@
                 font-size: 1.2rem;
             }
             
-            .contact-info, .footer-contact {
+            .profile-photo {
+                width: 250px;
+                height: 320px;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .contact-info {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .footer-contact {
                 flex-direction: column;
                 align-items: center;
                 gap: 1rem;
@@ -912,26 +1145,22 @@
                 display: block;
             }
 
-            .timeline::before,
-            .internship-timeline::before {
+            .timeline::before {
                 left: 20px;
             }
 
-            .timeline-item:nth-child(even) .timeline-content,
-            .internship-item:nth-child(even) .internship-content {
+            .timeline-item:nth-child(even) .timeline-content {
                 margin-left: 0;
                 border-right: none;
                 border-left: 5px solid #764ba2;
             }
 
-            .timeline-content,
-            .internship-content {
+            .timeline-content {
                 width: calc(100% - 80px);
                 margin-left: 80px !important;
             }
 
-            .timeline-dot,
-            .internship-dot {
+            .timeline-dot {
                 left: 20px;
             }
 
@@ -951,28 +1180,34 @@
                 font-size: 2.5rem;
             }
 
-            .tabs-nav {
+            .tabs-nav, .cert-tabs-nav {
                 flex-direction: column;
                 align-items: center;
+            }
+
+            .pdf-download-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 16px;
+                font-size: 14px;
             }
         }
 
         @media (max-width: 480px) {
-            .hero h1 {
+            .hero-name {
                 font-size: 2.2rem;
             }
             
             .profile-photo {
-                width: 180px;
-                height: 180px;
+                width: 200px;
+                height: 260px;
             }
             
             .hero .description {
                 font-size: 1.1rem;
             }
             
-            .timeline-content,
-            .internship-content {
+            .timeline-content {
                 padding: 2rem;
             }
             
@@ -985,6 +1220,12 @@
     </style>
 </head>
 <body>
+    <!-- PDF Download Button -->
+    <button class="pdf-download-btn" onclick="downloadPortfolioPDF()">
+        <i class="fas fa-file-pdf"></i>
+        Download Portfolio PDF
+    </button>
+
     <!-- Navigation -->
     <nav class="nav" id="navbar">
         <div class="nav-container">
@@ -992,8 +1233,8 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#internships">Internships</a></li>
                 <li><a href="#experience">Experience</a></li>
+                <li><a href="#internships">Internships</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#certifications">Certifications</a></li>
@@ -1008,34 +1249,66 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
-        <div class="hero-content">
-            <img src="myphoto.jpg" alt="Ihab Mokhtar - IT Manager" class="profile-photo">
-            <h1>Ihab Mokhtar Bayoumi</h1>
-            <div class="title">IT Manager</div>
-            <div class="subtitle">DevOps Trainee | AWS Certified Solutions Architect</div>
-            <div class="description">
-                Experienced IT Manager with 6+ years of progressive experience managing every aspect of technology and IT infrastructure. 
-                Network Engineer with extensive knowledge of networking principles, IT Security basics, operating systems, databases, 
-                scripting languages, and network automation tools. AWS Certified Cloud Practitioner proficient in Cloud infrastructure, 
-                Information Management, App Development, and Virtualization.
-            </div>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>Cairo, Egypt</span>
+        <div class="container">
+            <div class="hero-content">
+                <!-- Centered Name Above Everything -->
+                <h1 class="hero-name">Ihab Mokhtar Bayoumi</h1>
+                
+                <div class="hero-main">
+                    <!-- Profile Image Section -->
+                    <div class="hero-image">
+                        <div class="profile-photo-container">
+                            <img src="myphoto.jpg" alt="Ihab Mokhtar - IT Manager" class="profile-photo">
+                        </div>
+                    </div>
+                    
+                    <!-- Text Content Section -->
+                    <div class="hero-text">
+                        <div class="title">IT Manager</div>
+                        <div class="subtitle">DevOps Engineer Trainee | AWS Certified Solutions Architect</div>
+                        <div class="description">
+                            Experienced IT Manager with 6+ years of progressive experience managing technology infrastructure. 
+                            AWS Certified Solutions Architect with expertise in cloud computing, DevOps practices, and team leadership. 
+                            Proven track record of delivering 60% efficiency improvements through automation and achieving 99.5% network uptime.
+                        </div>
+                        
+                        <!-- Enhanced Action Buttons Layout -->
+                        <div class="action-buttons">
+                            <button class="action-btn primary" onclick="downloadCV()">
+                                <i class="fas fa-download"></i>
+                                Download CV
+                            </button>
+                            <a href="https://github.com/ihabmo5tar25" target="_blank" class="action-btn">
+                                <i class="fab fa-github"></i>
+                                GitHub Profile
+                            </a>
+                            <a href="https://www.linkedin.com/in/ehab-mokhtar-25ih5/" target="_blank" class="action-btn">
+                                <i class="fab fa-linkedin"></i>
+                                LinkedIn
+                            </a>
+                            <a href="#contact" class="action-btn">
+                                <i class="fas fa-envelope"></i>
+                                Get In Touch
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <a href="mailto:ihabmo5tar25@gmail.com" class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>ihabmo5tar25@gmail.com</span>
-                </a>
-                <a href="tel:+201097458050" class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <span>+20 109 745 8050</span>
-                </a>
-                <a href="https://www.linkedin.com/in/ehab-mokhtar-25ih5/" target="_blank" class="contact-item">
-                    <i class="fab fa-linkedin"></i>
-                    <span>LinkedIn</span>
-                </a>
+                
+                <!-- Enhanced Contact Information Grid -->
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Cairo, Egypt</span>
+                    </div>
+                    <a href="mailto:ihabmo5tar25@gmail.com" class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>ihabmo5tar25@gmail.com</span>
+                    </a>
+                    <a href="tel:+201097458050" class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+20 109 745 8050</span>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -1046,81 +1319,11 @@
             <h2 class="section-title fade-in">Professional Summary</h2>
             <div class="summary-card fade-in">
                 <div class="summary-text">
-                    Experienced IT Manager with 6+ years of progressive experience managing every aspect of technology and IT infrastructure. 
-                    Network Engineer with thorough knowledge of networking principles and IT Security basics. Extensive knowledge of 
-                    operating systems, databases, scripting languages, and network automation tools. AWS Certified Cloud Practitioner 
-                    skilled in setting up and maintaining AWS services. Proficiency in Cloud infrastructure and Information Management, 
-                    as well as App Development and Virtualization. Proven track record of delivering 60% efficiency improvements through 
-                    automation and achieving 99.5% network uptime.
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Internship Journey -->
-    <section class="section" id="internships">
-        <div class="container">
-            <h2 class="section-title fade-in">Internship & Training Journey</h2>
-            <div class="internship-timeline">
-                <div class="internship-item">
-                    <div class="internship-content fade-in">
-                        <div class="internship-title">Cloud DevOps Trainee</div>
-                        <div class="internship-company">DEPI | Jun 2025 - Dec 2025</div>
-                        <div class="internship-description">
-                            Trained as a DevOps Engineer, enhancing technical proficiency in cloud technologies, automation, 
-                            and modern DevOps practices. Gained hands-on experience with CI/CD pipelines, containerization, 
-                            and infrastructure as code.
-                        </div>
-                    </div>
-                    <div class="internship-dot"></div>
-                </div>
-
-                <div class="internship-item">
-                    <div class="internship-content fade-in">
-                        <div class="internship-title">Cloud Technical Support</div>
-                        <div class="internship-company">Huawei | Aug 2025 - Sep 2025</div>
-                        <div class="internship-description">
-                            Gained hands-on experience in HCIA Cloud Computing, providing technical support for cloud services, 
-                            troubleshooting cloud infrastructure issues, and supporting enterprise cloud implementations.
-                        </div>
-                    </div>
-                    <div class="internship-dot"></div>
-                </div>
-
-                <div class="internship-item">
-                    <div class="internship-content fade-in">
-                        <div class="internship-title">Cloud Architect</div>
-                        <div class="internship-company">Creativa Innovation Hubs | Jul 2025 - Aug 2025</div>
-                        <div class="internship-description">
-                            Gained hands-on experience in Cloud Services Management and Operation, designing cloud architectures, 
-                            implementing cloud solutions, and managing cloud service operations for enterprise clients.
-                        </div>
-                    </div>
-                    <div class="internship-dot"></div>
-                </div>
-
-                <div class="internship-item">
-                    <div class="internship-content fade-in">
-                        <div class="internship-title">Public Cloud Solutions Architect</div>
-                        <div class="internship-company">NTI | Sep 2022 - Dec 2022</div>
-                        <div class="internship-description">
-                            Gained hands-on experience through Amazon Internship program, working with AWS services, 
-                            designing cloud solutions, and implementing best practices for public cloud deployments.
-                        </div>
-                    </div>
-                    <div class="internship-dot"></div>
-                </div>
-
-                <div class="internship-item">
-                    <div class="internship-content fade-in">
-                        <div class="internship-title">AWS re/Start Program</div>
-                        <div class="internship-company">ITI | Dec 2021 - Mar 2022</div>
-                        <div class="internship-description">
-                            Completed the comprehensive AWS re/Start program, gaining fundamental and advanced cloud skills, 
-                            hands-on AWS experience, and industry-relevant technical and professional skills.
-                        </div>
-                    </div>
-                    <div class="internship-dot"></div>
+                    Experienced IT Manager with 6+ years of progressive experience managing technology infrastructure and cross-functional teams. 
+                    AWS Certified Solutions Architect with deep expertise in cloud computing, DevOps practices, network engineering, and IT security. 
+                    Proven leader in driving digital transformation initiatives, implementing automation solutions that deliver 60% efficiency improvements, 
+                    and maintaining 99.5% system uptime. Skilled in managing complex IT projects, leading technical teams, and aligning technology 
+                    strategy with business objectives.
                 </div>
             </div>
         </div>
@@ -1137,11 +1340,12 @@
                         <div class="job-company">Elegant Ceramic Company, Beni Suef, Egypt | Aug 2024 - Present</div>
                         <div class="job-description">
                             <ul>
-                                <li>Lead IT infrastructure strategy and cross-functional team management</li>
-                                <li>Oversee cloud migration projects and DevOps transformation initiatives</li>
-                                <li>Manage enterprise-wide technology implementations and system upgrades</li>
-                                <li>Coordinate with stakeholders to align IT operations with business objectives</li>
-                                <li>Implement security policies and compliance frameworks across the organization</li>
+                                <li><strong>Strategic Leadership:</strong> Lead IT infrastructure strategy and manage cross-functional technical teams</li>
+                                <li><strong>Digital Transformation:</strong> Oversee cloud migration projects and DevOps transformation initiatives</li>
+                                <li><strong>Project Management:</strong> Manage enterprise-wide technology implementations and system upgrades</li>
+                                <li><strong>Stakeholder Management:</strong> Coordinate with executive leadership to align IT operations with business objectives</li>
+                                <li><strong>Security & Compliance:</strong> Implement comprehensive security policies and compliance frameworks</li>
+                                <li><strong>Budget Management:</strong> Optimize IT spending while maintaining service quality and performance</li>
                             </ul>
                         </div>
                     </div>
@@ -1154,11 +1358,12 @@
                         <div class="job-company">Elegant Ceramic Company, Beni Suef, Egypt | Dec 2022 - Aug 2024</div>
                         <div class="job-description">
                             <ul>
-                                <li>Designed and maintained enterprise network infrastructure for 100+ endpoints</li>
-                                <li><strong>Automated routine tasks using PowerShell/Bash, reducing manual effort by 60%</strong></li>
-                                <li>Managed AWS virtual networks (VPC, subnets, security groups) with best practices</li>
-                                <li>Integrated network services into CI/CD workflows for faster deployments</li>
-                                <li>Achieved 99.5% network uptime through proactive monitoring</li>
+                                <li><strong>Infrastructure Design:</strong> Designed and maintained enterprise network infrastructure for 100+ endpoints</li>
+                                <li><strong>Automation Excellence:</strong> Automated routine tasks using PowerShell/Bash, reducing manual effort by 60%</li>
+                                <li><strong>Cloud Networking:</strong> Managed AWS virtual networks (VPC, subnets, security groups) with best practices</li>
+                                <li><strong>DevOps Integration:</strong> Integrated network services into CI/CD workflows for faster deployments</li>
+                                <li><strong>Performance Optimization:</strong> Achieved 99.5% network uptime through proactive monitoring and maintenance</li>
+                                <li><strong>Security Implementation:</strong> Deployed enterprise-grade security solutions and monitoring systems</li>
                             </ul>
                         </div>
                     </div>
@@ -1171,11 +1376,11 @@
                         <div class="job-company">Rondy Ceramic Company, Beni Suef, Egypt | Feb 2022 - Nov 2022</div>
                         <div class="job-description">
                             <ul>
-                                <li>Managed Active Directory and Windows Server environments</li>
-                                <li><strong>Automated backup procedures, reducing recovery time by 40%</strong></li>
-                                <li>Configured enterprise firewalls (Sophos, FortiGate) for security compliance</li>
-                                <li>Maintained VEEAM backup solutions and disaster recovery procedures</li>
-                                <li>Performed root-cause analysis to minimize system downtime</li>
+                                <li><strong>Active Directory Management:</strong> Administered Active Directory and Windows Server environments</li>
+                                <li><strong>Backup Optimization:</strong> Automated backup procedures, reducing recovery time by 40%</li>
+                                <li><strong>Firewall Configuration:</strong> Configured enterprise firewalls (Sophos, FortiGate) for security compliance</li>
+                                <li><strong>Disaster Recovery:</strong> Maintained VEEAM backup solutions and disaster recovery procedures</li>
+                                <li><strong>Troubleshooting:</strong> Performed root-cause analysis to minimize system downtime</li>
                             </ul>
                         </div>
                     </div>
@@ -1188,10 +1393,10 @@
                         <div class="job-company">Rondy Ceramic Company, Beni Suef, Egypt | Jan 2021 - Feb 2022</div>
                         <div class="job-description">
                             <ul>
-                                <li><strong>Achieved 95% first-call resolution rate</strong> for technical support</li>
-                                <li>Managed hardware/software installations and upgrades</li>
-                                <li>Developed technical documentation and standard operating procedures</li>
-                                <li>Conducted preventive maintenance on critical equipment</li>
+                                <li><strong>Technical Support Excellence:</strong> Achieved 95% first-call resolution rate for technical support</li>
+                                <li><strong>System Management:</strong> Managed hardware/software installations and upgrades</li>
+                                <li><strong>Documentation:</strong> Developed comprehensive technical documentation and SOPs</li>
+                                <li><strong>Preventive Maintenance:</strong> Conducted proactive maintenance on critical equipment</li>
                             </ul>
                         </div>
                     </div>
@@ -1204,10 +1409,10 @@
                         <div class="job-company">Egyptian Armed Forces | Mar 2020 - Dec 2020</div>
                         <div class="job-description">
                             <ul>
-                                <li>Provided technical support in high-pressure military environment</li>
-                                <li>Managed network services and system maintenance for critical operations</li>
-                                <li>Developed troubleshooting skills under strict operational protocols</li>
-                                <li>Gained experience in network troubleshooting and systems management</li>
+                                <li><strong>High-Pressure Support:</strong> Provided technical support in mission-critical military environment</li>
+                                <li><strong>Network Services:</strong> Managed network services and system maintenance for critical operations</li>
+                                <li><strong>Protocol Compliance:</strong> Developed troubleshooting skills under strict operational protocols</li>
+                                <li><strong>Systems Management:</strong> Gained foundational experience in enterprise network troubleshooting</li>
                             </ul>
                         </div>
                     </div>
@@ -1217,36 +1422,115 @@
         </div>
     </section>
 
-    <!-- DevOps Projects Portfolio -->
+    <!-- Internships Journey -->
+    <section class="section" id="internships">
+        <div class="container">
+            <h2 class="section-title fade-in">Internship Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content fade-in">
+                        <div class="job-title">Cloud DevOps Trainee</div>
+                        <div class="job-company">DEPI | Jun 2025 - Dec 2025</div>
+                        <div class="job-description">
+                            <ul>
+                                <li><strong>DevOps Training:</strong> Comprehensive training as a DevOps Engineer, enhancing technical proficiency</li>
+                                <li><strong>CI/CD Implementation:</strong> Hands-on experience with continuous integration and deployment pipelines</li>
+                                <li><strong>Container Orchestration:</strong> Practical training in Docker and Kubernetes orchestration</li>
+                                <li><strong>Cloud Services:</strong> Advanced training in AWS and Azure cloud services</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content fade-in">
+                        <div class="job-title">Cloud Services Management and Operation</div>
+                        <div class="job-company">Creativa Innovation Hubs | Jul 2025 - Aug 2025</div>
+                        <div class="job-description">
+                            <ul>
+                                <li><strong>Cloud Architecture:</strong> Gained hands-on experience as a Cloud Architect</li>
+                                <li><strong>Cloud Operations:</strong> Managed cloud services and operational procedures</li>
+                                <li><strong>Innovation Projects:</strong> Participated in innovative cloud solution development</li>
+                                <li><strong>Best Practices:</strong> Implemented cloud architecture best practices</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content fade-in">
+                        <div class="job-title">HCIA Cloud Computing</div>
+                        <div class="job-company">Huawei | Jul 2024 - Aug 2024</div>
+                        <div class="job-description">
+                            <ul>
+                                <li><strong>Cloud Technical Support:</strong> Gained hands-on experience in cloud technical support</li>
+                                <li><strong>Huawei Cloud Platform:</strong> Learned Huawei's cloud computing technologies</li>
+                                <li><strong>Technical Troubleshooting:</strong> Developed expertise in cloud service troubleshooting</li>
+                                <li><strong>Customer Support:</strong> Enhanced customer service skills in technical environments</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content fade-in">
+                        <div class="job-title">Public Cloud Solutions Architect</div>
+                        <div class="job-company">Amazon - NTI Partnership | Sep 2022 - Dec 2022</div>
+                        <div class="job-description">
+                            <ul>
+                                <li><strong>AWS Solutions Architecture:</strong> Gained hands-on experience as a Public Cloud Solutions Architect</li>
+                                <li><strong>Architecture Design:</strong> Designed scalable and resilient cloud architectures</li>
+                                <li><strong>Best Practices:</strong> Implemented AWS Well-Architected Framework principles</li>
+                                <li><strong>Client Solutions:</strong> Developed cloud solutions for various business requirements</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content fade-in">
+                        <div class="job-title">AWS re/Start Program</div>
+                        <div class="job-company">ITI | Dec 2021 - Mar 2022</div>
+                        <div class="job-description">
+                            <ul>
+                                <li><strong>AWS Foundation:</strong> Completed comprehensive AWS re/Start program</li>
+                                <li><strong>Cloud Skills Development:</strong> Gained fundamental cloud computing skills</li>
+                                <li><strong>Hands-on Labs:</strong> Extensive practical experience with AWS services</li>
+                                <li><strong>Career Preparation:</strong> Professional development for cloud careers</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced DevOps Projects Portfolio -->
     <section class="section" id="projects">
         <div class="container">
             <h2 class="section-title fade-in">DevOps & Cloud Project Portfolio</h2>
             <div class="projects-grid">
                 <div class="project-card fade-in">
                     <div class="project-icon">
-                        <i class="fab fa-microsoft"></i>
+                        <i class="fab fa-docker"></i>
                     </div>
-                    <div class="project-title">CI/CD Pipeline with Azure DevOps</div>
-                    <div class="project-tech">Azure DevOps • Azure Pipelines • Git • .NET</div>
+                    <div class="project-title">Containerization of Java Project using Docker</div>
+                    <div class="project-tech">Docker • Java • Maven • Multi-stage Build</div>
                     <div class="project-description">
-                        Created comprehensive CI/CD pipeline using Azure DevOps for automated build, test, and deployment processes.
+                        Containerized a complete Java application using Docker with multi-stage builds, optimized image size, and implemented best practices for security and performance.
                     </div>
-                    <div class="project-impact">
-                        <i class="fas fa-rocket"></i> 80% faster deployments
-                    </div>
-                </div>
-
-                <div class="project-card fade-in">
-                    <div class="project-icon">
-                        <i class="fab fa-aws"></i>
-                    </div>
-                    <div class="project-title">DevOps Lifecycle with AWS</div>
-                    <div class="project-tech">AWS CodePipeline • CodeBuild • CodeDeploy • Lambda</div>
-                    <div class="project-description">
-                        Implemented complete DevOps lifecycle using AWS services for continuous integration and deployment.
-                    </div>
-                    <div class="project-impact">
-                        <i class="fas fa-sync-alt"></i> Full automation achieved
+                    <div class="project-links">
+                        <div class="project-impact">
+                            <i class="fas fa-shipping-fast"></i> 70% faster deployments
+                        </div>
+                        <a href="https://github.com/ihabmo5tar25/java-docker-containerization" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
                     </div>
                 </div>
 
@@ -1254,27 +1538,18 @@
                     <div class="project-icon">
                         <i class="fas fa-dharmachakra"></i>
                     </div>
-                    <div class="project-title">Scalable Kubernetes Application</div>
-                    <div class="project-tech">Kubernetes • Docker • Helm • YAML</div>
+                    <div class="project-title">Build a Scalable Application with Kubernetes and Docker</div>
+                    <div class="project-tech">Kubernetes • Docker • Helm • YAML • Ingress</div>
                     <div class="project-description">
-                        Built and deployed scalable containerized application using Kubernetes orchestration and Docker containers.
+                        Built and deployed scalable containerized application using Kubernetes orchestration with auto-scaling, load balancing, health monitoring, and ingress controllers.
                     </div>
-                    <div class="project-impact">
-                        <i class="fas fa-expand-arrows-alt"></i> Auto-scaling enabled
-                    </div>
-                </div>
-
-                <div class="project-card fade-in">
-                    <div class="project-icon">
-                        <i class="fab fa-docker"></i>
-                    </div>
-                    <div class="project-title">Java Project Containerization</div>
-                    <div class="project-tech">Docker • Docker-Compose • Maven • Spring Boot</div>
-                    <div class="project-description">
-                        Containerized Java application with Docker, creating portable and consistent deployment environment.
-                    </div>
-                    <div class="project-impact">
-                        <i class="fas fa-box"></i> Improved portability
+                    <div class="project-links">
+                        <div class="project-impact">
+                            <i class="fas fa-expand-arrows-alt"></i> Auto-scaling enabled
+                        </div>
+                        <a href="https://github.com/ihabmo5tar25/kubernetes-scalable-app" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
                     </div>
                 </div>
 
@@ -1282,55 +1557,18 @@
                     <div class="project-icon">
                         <i class="fab fa-microsoft"></i>
                     </div>
-                    <div class="project-title">Exchange Server High Availability</div>
-                    <div class="project-tech">Exchange Server • DAG • Load Balancer • Failover</div>
+                    <div class="project-title">Create a CI/CD Pipeline using Azure DevOps</div>
+                    <div class="project-tech">Azure DevOps • Azure Pipelines • Git • .NET • YAML</div>
                     <div class="project-description">
-                        Deployed high availability and site resilience solution for Microsoft Exchange Server environment.
+                        Created comprehensive CI/CD pipeline using Azure DevOps for automated build, test, and deployment processes with integrated security scanning and quality gates.
                     </div>
-                    <div class="project-impact">
-                        <i class="fas fa-shield-alt"></i> 99.9% email uptime
-                    </div>
-                </div>
-
-                <div class="project-card fade-in">
-                    <div class="project-icon">
-                        <i class="fab fa-aws"></i>
-                    </div>
-                    <div class="project-title">AWS Continuous Integration</div>
-                    <div class="project-tech">AWS CodeCommit • CodeBuild • S3 • CloudFormation</div>
-                    <div class="project-description">
-                        Implemented continuous integration pipeline using AWS cloud services for automated testing and builds.
-                    </div>
-                    <div class="project-impact">
-                        <i class="fas fa-cloud"></i> Cloud-native CI/CD
-                    </div>
-                </div>
-
-                <div class="project-card fade-in">
-                    <div class="project-icon">
-                        <i class="fab fa-docker"></i>
-                    </div>
-                    <div class="project-title">Containerized Application Deployment</div>
-                    <div class="project-tech">Docker Swarm • Nginx • Load Balancing</div>
-                    <div class="project-description">
-                        Deployed containerized application with load balancing and service discovery using Docker Swarm.
-                    </div>
-                    <div class="project-impact">
-                        <i class="fas fa-balance-scale"></i> Load balanced deployment
-                    </div>
-                </div>
-
-                <div class="project-card fade-in">
-                    <div class="project-icon">
-                        <i class="fas fa-cube"></i>
-                    </div>
-                    <div class="project-title">Automated Kubernetes with Terraform</div>
-                    <div class="project-tech">Terraform • Kubernetes • AWS EKS • Helm</div>
-                    <div class="project-description">
-                        Automated Kubernetes cluster deployment and management using Terraform infrastructure as code.
-                    </div>
-                    <div class="project-impact">
-                        <i class="fas fa-cogs"></i> Infrastructure automation
+                    <div class="project-links">
+                        <div class="project-impact">
+                            <i class="fas fa-rocket"></i> 80% faster deployments
+                        </div>
+                        <a href="https://github.com/ihabmo5tar25/azure-cicd-pipeline" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
                     </div>
                 </div>
 
@@ -1338,13 +1576,56 @@
                     <div class="project-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <div class="project-title">Application Monitoring Dashboard</div>
-                    <div class="project-tech">Prometheus • Grafana • Alertmanager • Metrics</div>
+                    <div class="project-title">Create a Monitoring Dashboard for an Application</div>
+                    <div class="project-tech">Prometheus • Grafana • ELK Stack • AlertManager</div>
                     <div class="project-description">
-                        Created comprehensive monitoring dashboard for application performance and infrastructure metrics.
+                        Implemented comprehensive monitoring and observability solution with real-time dashboards, alerting, and log aggregation for production systems.
                     </div>
-                    <div class="project-impact">
-                        <i class="fas fa-eye"></i> Real-time monitoring
+                    <div class="project-links">
+                        <div class="project-impact">
+                            <i class="fas fa-eye"></i> Real-time insights
+                        </div>
+                        <a href="https://github.com/ihabmo5tar25/monitoring-dashboard" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card fade-in">
+                    <div class="project-icon">
+                        <i class="fas fa-ship"></i>
+                    </div>
+                    <div class="project-title">Deploy a Containerized Application</div>
+                    <div class="project-tech">Docker • Kubernetes • CI/CD • Helm Charts</div>
+                    <div class="project-description">
+                        End-to-end deployment of containerized applications with automated CI/CD pipelines, health checks, and production-ready configurations.
+                    </div>
+                    <div class="project-links">
+                        <div class="project-impact">
+                            <i class="fas fa-deployment"></i> Production ready
+                        </div>
+                        <a href="https://github.com/ihabmo5tar25/containerized-app-deployment" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card fade-in">
+                    <div class="project-icon">
+                        <i class="fas fa-api"></i>
+                    </div>
+                    <div class="project-title">Create an Application with an API and Deploy it to Kubernetes</div>
+                    <div class="project-tech">REST API • Kubernetes • Docker • Service Mesh</div>
+                    <div class="project-description">
+                        Developed a complete application with RESTful API and deployed it to Kubernetes cluster with service discovery, load balancing, and API gateway.
+                    </div>
+                    <div class="project-links">
+                        <div class="project-impact">
+                            <i class="fas fa-network-wired"></i> Microservices ready
+                        </div>
+                        <a href="https://github.com/ihabmo5tar25/api-kubernetes-deployment" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
                     </div>
                 </div>
 
@@ -1352,13 +1633,37 @@
                     <div class="project-icon">
                         <i class="fab fa-aws"></i>
                     </div>
-                    <div class="project-title">AWS 3-Tier Architecture Deployment</div>
-                    <div class="project-tech">AWS EC2 • RDS • Load Balancer • Auto Scaling</div>
+                    <div class="project-title">Implement DevOps Lifecycle with Amazon Web Services (AWS)</div>
+                    <div class="project-tech">AWS CodePipeline • CodeBuild • CodeDeploy • Lambda</div>
                     <div class="project-description">
-                        Deployed scalable Java application with high availability architecture using AWS services.
+                        Implemented complete DevOps lifecycle using AWS services for continuous integration and deployment with automated testing and rollback capabilities.
                     </div>
-                    <div class="project-impact">
-                        <i class="fas fa-chart-line"></i> 99.9% uptime, 35% cost reduction
+                    <div class="project-links">
+                        <div class="project-impact">
+                            <i class="fas fa-sync-alt"></i> Full automation achieved
+                        </div>
+                        <a href="https://github.com/ihabmo5tar25/aws-devops-lifecycle" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card fade-in">
+                    <div class="project-icon">
+                        <i class="fab fa-aws"></i>
+                    </div>
+                    <div class="project-title">AWS 3-Tier Architecture</div>
+                    <div class="project-tech">AWS EC2 • RDS • ELB • Auto Scaling • CloudFormation</div>
+                    <div class="project-description">
+                        Deployed highly available and scalable 3-tier web application architecture on AWS with load balancing, auto-scaling, and database clustering.
+                    </div>
+                    <div class="project-links">
+                        <div class="project-impact">
+                            <i class="fas fa-chart-line"></i> 99.9% uptime
+                        </div>
+                        <a href="https://github.com/ihabmo5tar25/aws-3tier-architecture" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
                     </div>
                 </div>
 
@@ -1366,27 +1671,18 @@
                     <div class="project-icon">
                         <i class="fas fa-code"></i>
                     </div>
-                    <div class="project-title">Infrastructure as Code Implementation</div>
-                    <div class="project-tech">Terraform • AWS CloudFormation • Git</div>
+                    <div class="project-title">Infrastructure as Code</div>
+                    <div class="project-tech">Terraform • AWS CloudFormation • Ansible</div>
                     <div class="project-description">
-                        Automated Apache web server deployment and configuration management using IaC principles.
+                        Automated infrastructure provisioning and configuration management using IaC principles with version control and environment consistency.
                     </div>
-                    <div class="project-impact">
-                        <i class="fas fa-clock"></i> 75% deployment time reduction
-                    </div>
-                </div>
-
-                <div class="project-card fade-in">
-                    <div class="project-icon">
-                        <i class="fas fa-lambda"></i>
-                    </div>
-                    <div class="project-title">Automated AWS Backup Solutions</div>
-                    <div class="project-tech">AWS Lambda • EC2 AMI • CloudWatch • Python</div>
-                    <div class="project-description">
-                        Created weekly automated backup system for EC2 instances with monitoring and alerting.
-                    </div>
-                    <div class="project-impact">
-                        <i class="fas fa-database"></i> 100% data protection
+                    <div class="project-links">
+                        <div class="project-impact">
+                            <i class="fas fa-clock"></i> 75% deployment reduction
+                        </div>
+                        <a href="https://github.com/ihabmo5tar25/infrastructure-as-code" target="_blank" class="github-link">
+                            <i class="fab fa-github"></i> View Code
+                        </a>
                     </div>
                 </div>
             </div>
@@ -1399,27 +1695,49 @@
             <h2 class="section-title fade-in">Technical Skills & Expertise</h2>
             <div class="skills-tabs">
                 <div class="tabs-nav">
-                    <button class="tab-btn active" onclick="openTab(event, 'cloud-devops')">Cloud & DevOps</button>
-                    <button class="tab-btn" onclick="openTab(event, 'networking-security')">Networking & Security</button>
-                    <button class="tab-btn" onclick="openTab(event, 'systems-databases')">Systems & Databases</button>
-                    <button class="tab-btn" onclick="openTab(event, 'programming-automation')">Programming & Automation</button>
-                    <button class="tab-btn" onclick="openTab(event, 'leadership-languages')">Leadership & Languages</button>
+                    <button class="tab-btn active" onclick="openTab(event, 'cloud-devops')">
+                        <i class="fas fa-cloud"></i> Cloud & DevOps
+                    </button>
+                    <button class="tab-btn" onclick="openTab(event, 'networking-security')">
+                        <i class="fas fa-network-wired"></i> Networking & Security
+                    </button>
+                    <button class="tab-btn" onclick="openTab(event, 'systems-databases')">
+                        <i class="fas fa-server"></i> Systems & Databases
+                    </button>
+                    <button class="tab-btn" onclick="openTab(event, 'programming-tools')">
+                        <i class="fas fa-code"></i> Programming & Tools
+                    </button>
+                    <button class="tab-btn" onclick="openTab(event, 'leadership')">
+                        <i class="fas fa-users"></i> Leadership & Languages
+                    </button>
                 </div>
 
                 <div id="cloud-devops" class="tab-content active">
                     <div class="skills-container">
                         <div class="skills-category fade-in">
-                            <h3><i class="fas fa-cloud"></i> Cloud Platforms</h3>
+                            <h3><i class="fab fa-aws"></i> Cloud Platforms</h3>
                             <div class="skill-item">
-                                <span class="skill-name">AWS Services (EC2, S3, VPC, RDS, IAM)</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-aws"></i> AWS (EC2, S3, VPC, RDS, IAM)
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Microsoft Azure</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-microsoft"></i> Microsoft Azure
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">AWS Lambda & Serverless</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-bolt"></i> AWS Lambda & Serverless
+                                </span>
+                                <span class="skill-level">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">
+                                    <i class="fas fa-layer-group"></i> CloudFormation & ARM Templates
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                         </div>
@@ -1427,19 +1745,55 @@
                         <div class="skills-category fade-in">
                             <h3><i class="fas fa-cogs"></i> DevOps Tools</h3>
                             <div class="skill-item">
-                                <span class="skill-name">Docker & Containerization</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-docker"></i> Docker & Containerization
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Kubernetes</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-dharmachakra"></i> Kubernetes
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Jenkins & CI/CD</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-jenkins"></i> Jenkins & CI/CD
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Azure DevOps</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-microsoft"></i> Azure DevOps
+                                </span>
+                                <span class="skill-level">Advanced</span>
+                            </div>
+                        </div>
+
+                        <div class="skills-category fade-in">
+                            <h3><i class="fas fa-terminal"></i> Scripting & Automation</h3>
+                            <div class="skill-item">
+                                <span class="skill-name">
+                                    <i class="fas fa-terminal"></i> Bash Scripting
+                                </span>
+                                <span class="skill-level">Expert</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">
+                                    <i class="fas fa-code"></i> PowerShell
+                                </span>
+                                <span class="skill-level">Expert</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">
+                                    <i class="fab fa-python"></i> Python
+                                </span>
+                                <span class="skill-level">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">
+                                    <i class="fas fa-file-code"></i> YAML & JSON
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                         </div>
@@ -1447,32 +1801,22 @@
                         <div class="skills-category fade-in">
                             <h3><i class="fas fa-code-branch"></i> Infrastructure as Code</h3>
                             <div class="skill-item">
-                                <span class="skill-name">Terraform</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-cubes"></i> Terraform
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">AWS CloudFormation</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-cog"></i> Ansible
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Ansible</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-aws"></i> AWS CloudFormation
+                                </span>
                                 <span class="skill-level">Advanced</span>
-                            </div>
-                        </div>
-
-                        <div class="skills-category fade-in">
-                            <h3><i class="fas fa-chart-line"></i> Monitoring & Observability</h3>
-                            <div class="skill-item">
-                                <span class="skill-name">Prometheus & Grafana</span>
-                                <span class="skill-level">Advanced</span>
-                            </div>
-                            <div class="skill-item">
-                                <span class="skill-name">AWS CloudWatch</span>
-                                <span class="skill-level">Advanced</span>
-                            </div>
-                            <div class="skill-item">
-                                <span class="skill-name">ELK Stack</span>
-                                <span class="skill-level">Intermediate</span>
                             </div>
                         </div>
                     </div>
@@ -1483,19 +1827,27 @@
                         <div class="skills-category fade-in">
                             <h3><i class="fas fa-network-wired"></i> Networking</h3>
                             <div class="skill-item">
-                                <span class="skill-name">CCNA Networking</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-certificate"></i> CCNA Routing & Switching
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">TCP/IP & Routing Protocols</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-sitemap"></i> TCP/IP & Network Protocols
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">VPN Configuration</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-shield-alt"></i> VPN Configuration
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Network Troubleshooting</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-search"></i> Network Troubleshooting
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                         </div>
@@ -1503,20 +1855,28 @@
                         <div class="skills-category fade-in">
                             <h3><i class="fas fa-shield-alt"></i> Security</h3>
                             <div class="skill-item">
-                                <span class="skill-name">Sophos & FortiGate Firewalls</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-fire"></i> Sophos Firewalls
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Network Security</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-shield-virus"></i> FortiGate Security
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Security Compliance</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-lock"></i> Network Security Policies
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Vulnerability Assessment</span>
-                                <span class="skill-level">Intermediate</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-clipboard-check"></i> Security Compliance
+                                </span>
+                                <span class="skill-level">Advanced</span>
                             </div>
                         </div>
                     </div>
@@ -1527,119 +1887,157 @@
                         <div class="skills-category fade-in">
                             <h3><i class="fas fa-desktop"></i> Operating Systems</h3>
                             <div class="skill-item">
-                                <span class="skill-name">Linux (RHEL, CentOS, Ubuntu)</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-redhat"></i> Red Hat Enterprise Linux
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Windows Server 2016/2019/2022</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-windows"></i> Windows Server 2016/2019/2022
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Active Directory</span>
-                                <span class="skill-level">Expert</span>
-                            </div>
-                            <div class="skill-item">
-                                <span class="skill-name">Red Hat Administration</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-ubuntu"></i> Ubuntu & CentOS
+                                </span>
                                 <span class="skill-level">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">
+                                    <i class="fas fa-users-cog"></i> Active Directory
+                                </span>
+                                <span class="skill-level">Expert</span>
                             </div>
                         </div>
 
                         <div class="skills-category fade-in">
-                            <h3><i class="fas fa-database"></i> Databases & Storage</h3>
+                            <h3><i class="fas fa-database"></i> Databases</h3>
                             <div class="skill-item">
-                                <span class="skill-name">SQL Server & MySQL</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-database"></i> SQL Server
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">PostgreSQL</span>
-                                <span class="skill-level">Intermediate</span>
-                            </div>
-                            <div class="skill-item">
-                                <span class="skill-name">AWS RDS & DynamoDB</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-leaf"></i> MySQL & PostgreSQL
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">VEEAM Backup Solutions</span>
-                                <span class="skill-level">Expert</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-aws"></i> AWS RDS & DynamoDB
+                                </span>
+                                <span class="skill-level">Advanced</span>
                             </div>
                         </div>
 
                         <div class="skills-category fade-in">
                             <h3><i class="fas fa-server"></i> Virtualization</h3>
                             <div class="skill-item">
-                                <span class="skill-name">VMware ESXi & vSphere</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-cube"></i> VMware vSphere
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Microsoft Hyper-V</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-microsoft"></i> Microsoft Hyper-V
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Virtual Machine Management</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-hdd"></i> VEEAM Backup
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="programming-automation" class="tab-content">
+                <div id="programming-tools" class="tab-content">
                     <div class="skills-container">
                         <div class="skills-category fade-in">
-                            <h3><i class="fas fa-terminal"></i> Scripting & Automation</h3>
+                            <h3><i class="fab fa-git-alt"></i> Version Control</h3>
                             <div class="skill-item">
-                                <span class="skill-name">Bash Scripting</span>
-                                <span class="skill-level">Expert</span>
-                            </div>
-                            <div class="skill-item">
-                                <span class="skill-name">PowerShell</span>
-                                <span class="skill-level">Expert</span>
-                            </div>
-                            <div class="skill-item">
-                                <span class="skill-name">Python</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-git-alt"></i> Git & GitHub
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">YAML & JSON</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-gitlab"></i> GitLab
+                                </span>
+                                <span class="skill-level">Intermediate</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">
+                                    <i class="fab fa-bitbucket"></i> Bitbucket
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                         </div>
 
                         <div class="skills-category fade-in">
-                            <h3><i class="fas fa-code"></i> Version Control & Collaboration</h3>
+                            <h3><i class="fas fa-chart-line"></i> Monitoring & Observability</h3>
                             <div class="skill-item">
-                                <span class="skill-name">Git & GitHub</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-chart-area"></i> Prometheus & Grafana
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">BitBucket</span>
-                                <span class="skill-level">Advanced</span>
+                                <span class="skill-name">
+                                    <i class="fab fa-aws"></i> AWS CloudWatch
+                                </span>
+                                <span class="skill-level">Expert</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">GitLab</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-search"></i> ELK Stack
+                                </span>
                                 <span class="skill-level">Intermediate</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="leadership-languages" class="tab-content">
+                <div id="leadership" class="tab-content">
                     <div class="skills-container">
                         <div class="skills-category fade-in">
                             <h3><i class="fas fa-users"></i> Leadership & Management</h3>
                             <div class="skill-item">
-                                <span class="skill-name">Team Leadership</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-user-tie"></i> IT Team Leadership
+                                </span>
                                 <span class="skill-level">Expert</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Project Management</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-tasks"></i> Project Management
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Stakeholder Management</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-handshake"></i> Stakeholder Management
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">Change Management</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-exchange-alt"></i> Change Management
+                                </span>
+                                <span class="skill-level">Advanced</span>
+                            </div>
+                            <div class="skill-item">
+                                <span class="skill-name">
+                                    <i class="fas fa-dollar-sign"></i> Budget Management
+                                </span>
                                 <span class="skill-level">Advanced</span>
                             </div>
                         </div>
@@ -1647,13 +2045,258 @@
                         <div class="skills-category fade-in">
                             <h3><i class="fas fa-language"></i> Languages</h3>
                             <div class="skill-item">
-                                <span class="skill-name">Arabic</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-flag"></i> Arabic
+                                </span>
                                 <span class="skill-level">Native</span>
                             </div>
                             <div class="skill-item">
-                                <span class="skill-name">English</span>
+                                <span class="skill-name">
+                                    <i class="fas fa-globe"></i> English
+                                </span>
                                 <span class="skill-level">Professional</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications -->
+    <section class="section" id="certifications">
+        <div class="container">
+            <h2 class="section-title fade-in">Certifications & Training</h2>
+            <div class="certifications-tabs">
+                <div class="cert-tabs-nav">
+                    <button class="cert-tab-btn active" onclick="openCertTab(event, 'official-certs')">Official Certifications</button>
+                    <button class="cert-tab-btn" onclick="openCertTab(event, 'internship-training')">Internship Training</button>
+                    <button class="cert-tab-btn" onclick="openCertTab(event, 'aws-academy')">AWS Academy</button>
+                    <button class="cert-tab-btn" onclick="openCertTab(event, 'online-courses')">Online Courses</button>
+                </div>
+
+                <div id="official-certs" class="cert-tab-content active">
+                    <div class="certifications-grid">
+                        <div class="certification-card certified fade-in">
+                            <div class="cert-badge">CERTIFIED</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="cert-name">AWS Solutions Architect – Associate</div>
+                            <div class="cert-provider">Amazon Web Services</div>
+                            <div class="cert-year">SAA-C03 - Valid</div>
+                        </div>
+
+                        <div class="certification-card certified fade-in">
+                            <div class="cert-badge">CERTIFIED</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="cert-name">AWS Cloud Practitioner</div>
+                            <div class="cert-provider">Amazon Web Services</div>
+                            <div class="cert-year">CLF-C01 - Valid</div>
+                        </div>
+
+                        <div class="certification-card certified fade-in">
+                            <div class="cert-badge">CERTIFIED</div>
+                            <div class="cert-icon">C</div>
+                            <div class="cert-name">CCNA - Network Associate</div>
+                            <div class="cert-provider">Cisco Systems</div>
+                            <div class="cert-year">200-301 - Valid</div>
+                        </div>
+
+                        <div class="certification-card certified fade-in">
+                            <div class="cert-badge">CERTIFIED</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-microsoft"></i>
+                            </div>
+                            <div class="cert-name">Azure Administrator Associate</div>
+                            <div class="cert-provider">Microsoft</div>
+                            <div class="cert-year">AZ-104 - Valid</div>
+                        </div>
+
+                        <div class="certification-card certified fade-in">
+                            <div class="cert-badge">CERTIFIED</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-redhat"></i>
+                            </div>
+                            <div class="cert-name">Red Hat Enterprise Linux</div>
+                            <div class="cert-provider">Red Hat</div>
+                            <div class="cert-year">RHCSA Track - Valid</div>
+                        </div>
+
+                        <div class="certification-card certified fade-in">
+                            <div class="cert-badge">CERTIFIED</div>
+                            <div class="cert-icon">S</div>
+                            <div class="cert-name">Sophos Certified Engineer</div>
+                            <div class="cert-provider">Sophos</div>
+                            <div class="cert-year">Network Security - Valid</div>
+                        </div>
+
+                        <div class="certification-card certified fade-in">
+                            <div class="cert-badge">CERTIFIED</div>
+                            <div class="cert-icon">H</div>
+                            <div class="cert-name">HCIA Cloud Computing</div>
+                            <div class="cert-provider">Huawei</div>
+                            <div class="cert-year">H13-511 - 2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="internship-training" class="cert-tab-content">
+                    <div class="certifications-grid">
+                        <div class="certification-card internship fade-in">
+                            <div class="cert-badge">TRAINING</div>
+                            <div class="cert-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="cert-name">Cloud DevOps Trainee</div>
+                            <div class="cert-provider">DEPI</div>
+                            <div class="cert-year">Jun 2025 - Dec 2025</div>
+                        </div>
+
+                        <div class="certification-card internship fade-in">
+                            <div class="cert-badge">INTERNSHIP</div>
+                            <div class="cert-icon">
+                                <i class="fas fa-cloud"></i>
+                            </div>
+                            <div class="cert-name">Cloud Services Management and Operation</div>
+                            <div class="cert-provider">Creativa Innovation Hubs</div>
+                            <div class="cert-year">Jul 2025 - Aug 2025</div>
+                        </div>
+
+                        <div class="certification-card internship fade-in">
+                            <div class="cert-badge">INTERNSHIP</div>
+                            <div class="cert-icon">H</div>
+                            <div class="cert-name">HCIA Cloud Computing</div>
+                            <div class="cert-provider">Huawei</div>
+                            <div class="cert-year">Jul 2024 - Aug 2024</div>
+                        </div>
+
+                        <div class="certification-card internship fade-in">
+                            <div class="cert-badge">INTERNSHIP</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="cert-name">Public Cloud Solutions Architect</div>
+                            <div class="cert-provider">Amazon - NTI Partnership</div>
+                            <div class="cert-year">Sep 2022 - Dec 2022</div>
+                        </div>
+
+                        <div class="certification-card internship fade-in">
+                            <div class="cert-badge">PROGRAM</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="cert-name">AWS re/Start Program</div>
+                            <div class="cert-provider">ITI</div>
+                            <div class="cert-year">Dec 2021 - Mar 2022</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="aws-academy" class="cert-tab-content">
+                    <div class="certifications-grid">
+                        <div class="certification-card aws-academy fade-in">
+                            <div class="cert-badge">AWS ACADEMY</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="cert-name">AWS Academy Cloud Foundations</div>
+                            <div class="cert-provider">AWS Academy</div>
+                            <div class="cert-year">Completed - 2024</div>
+                        </div>
+
+                        <div class="certification-card aws-academy fade-in">
+                            <div class="cert-badge">AWS ACADEMY</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="cert-name">AWS Academy Cloud Architecting</div>
+                            <div class="cert-provider">AWS Academy</div>
+                            <div class="cert-year">Completed - 2024</div>
+                        </div>
+
+                        <div class="certification-card aws-academy fade-in">
+                            <div class="cert-badge">AWS ACADEMY</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="cert-name">AWS Academy Data Center Technician</div>
+                            <div class="cert-provider">AWS Academy</div>
+                            <div class="cert-year">Completed - 2023</div>
+                        </div>
+
+                        <div class="certification-card aws-academy fade-in">
+                            <div class="cert-badge">AWS ACADEMY</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-aws"></i>
+                            </div>
+                            <div class="cert-name">AWS Academy Engineering Operations Technician</div>
+                            <div class="cert-provider">AWS Academy</div>
+                            <div class="cert-year">Completed - 2023</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="online-courses" class="cert-tab-content">
+                    <div class="certifications-grid">
+                        <div class="certification-card online-course fade-in">
+                            <div class="cert-badge">COURSE</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-docker"></i>
+                            </div>
+                            <div class="cert-name">Docker & Kubernetes</div>
+                            <div class="cert-provider">Cloud Native Computing</div>
+                            <div class="cert-year">Container Orchestration - 2024</div>
+                        </div>
+
+                        <div class="certification-card online-course fade-in">
+                            <div class="cert-badge">COURSE</div>
+                            <div class="cert-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="cert-name">Ansible Automation</div>
+                            <div class="cert-provider">Red Hat</div>
+                            <div class="cert-year">Configuration Management - 2023</div>
+                        </div>
+
+                        <div class="certification-card online-course fade-in">
+                            <div class="cert-badge">COURSE</div>
+                            <div class="cert-icon">
+                                <i class="fab fa-python"></i>
+                            </div>
+                            <div class="cert-name">Python Programming</div>
+                            <div class="cert-provider">Python Institute</div>
+                            <div class="cert-year">PCAP Course - 2024</div>
+                        </div>
+
+                        <div class="certification-card online-course fade-in">
+                            <div class="cert-badge">COURSE</div>
+                            <div class="cert-icon">
+                                <i class="fas fa-code-branch"></i>
+                            </div>
+                            <div class="cert-name">Terraform Infrastructure</div>
+                            <div class="cert-provider">HashiCorp</div>
+                            <div class="cert-year">Infrastructure as Code - 2024</div>
+                        </div>
+
+                        <div class="certification-card online-course fade-in">
+                            <div class="cert-badge">COURSE</div>
+                            <div class="cert-icon">
+                                <i class="fas fa-dharmachakra"></i>
+                            </div>
+                            <div class="cert-name">Kubernetes Administration</div>
+                            <div class="cert-provider">Cloud Native Computing</div>
+                            <div class="cert-year">CKA Preparation - 2024</div>
+                        </div>
+
+                        <div class="certification-card online-course fade-in">
+                            <div class="cert-badge">COURSE</div>
+                            <div class="cert-icon">V</div>
+                            <div class="cert-name">VMware vSphere</div>
+                            <div class="cert-provider">VMware</div>
+                            <div class="cert-year">VCTA-DCV Course - 2023</div>
                         </div>
                     </div>
                 </div>
@@ -1668,31 +2311,31 @@
             <div class="achievements-grid">
                 <div class="achievement-card fade-in">
                     <span class="achievement-number">6+</span>
-                    <div class="achievement-text">Years IT Experience</div>
+                    <div class="achievement-text">Years IT Leadership</div>
                 </div>
                 <div class="achievement-card fade-in">
                     <span class="achievement-number">100+</span>
-                    <div class="achievement-text">Network Endpoints Managed</div>
+                    <div class="achievement-text">Endpoints Managed</div>
                 </div>
                 <div class="achievement-card fade-in">
                     <span class="achievement-number">60%</span>
-                    <div class="achievement-text">Automation Efficiency Gain</div>
+                    <div class="achievement-text">Automation Efficiency</div>
+                </div>
+                <div class="achievement-card fade-in">
+                    <span class="achievement-number">99.5%</span>
+                    <div class="achievement-text">Network Uptime</div>
                 </div>
                 <div class="achievement-card fade-in">
                     <span class="achievement-number">95%</span>
-                    <div class="achievement-text">First-Call Resolution Rate</div>
+                    <div class="achievement-text">First-Call Resolution</div>
                 </div>
                 <div class="achievement-card fade-in">
                     <span class="achievement-number">40%</span>
                     <div class="achievement-text">Recovery Time Reduction</div>
                 </div>
                 <div class="achievement-card fade-in">
-                    <span class="achievement-number">99.5%</span>
-                    <div class="achievement-text">Network Uptime Achieved</div>
-                </div>
-                <div class="achievement-card fade-in">
-                    <span class="achievement-number">12+</span>
-                    <div class="achievement-text">Professional Certifications</div>
+                    <span class="achievement-number">20+</span>
+                    <div class="achievement-text">Total Certifications</div>
                 </div>
                 <div class="achievement-card fade-in">
                     <span class="achievement-number">2024</span>
@@ -1702,130 +2345,13 @@
         </div>
     </section>
 
-    <!-- Certifications -->
-    <section class="section" id="certifications">
-        <div class="container">
-            <h2 class="section-title fade-in">Certifications & Training</h2>
-            <div class="certifications-grid">
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">
-                        <i class="fab fa-aws"></i>
-                    </div>
-                    <div class="cert-name">AWS Solutions Architect – Associate</div>
-                    <div class="cert-provider">Amazon Web Services</div>
-                    <div class="cert-year">SAA-C03</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">
-                        <i class="fab fa-aws"></i>
-                    </div>
-                    <div class="cert-name">AWS Cloud Practitioner</div>
-                    <div class="cert-provider">Amazon Web Services</div>
-                    <div class="cert-year">CLF-C01</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">C</div>
-                    <div class="cert-name">CCNA - Network Associate</div>
-                    <div class="cert-provider">Cisco Systems</div>
-                    <div class="cert-year">Network Fundamentals</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">M</div>
-                    <div class="cert-name">MCSA - Solutions Associate</div>
-                    <div class="cert-provider">Microsoft</div>
-                    <div class="cert-year">Windows Server</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">
-                        <i class="fab fa-microsoft"></i>
-                    </div>
-                    <div class="cert-name">Microsoft Azure Fundamentals</div>
-                    <div class="cert-provider">Microsoft</div>
-                    <div class="cert-year">AZ-900</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">
-                        <i class="fab fa-python"></i>
-                    </div>
-                    <div class="cert-name">Python Programming</div>
-                    <div class="cert-provider">Python Institute</div>
-                    <div class="cert-year">PCAP Certified</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="cert-name">SQL Database Management</div>
-                    <div class="cert-provider">Microsoft</div>
-                    <div class="cert-year">T-SQL Certified</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <div class="cert-name">Ansible Automation</div>
-                    <div class="cert-provider">Red Hat</div>
-                    <div class="cert-year">Configuration Management</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">
-                        <i class="fab fa-redhat"></i>
-                    </div>
-                    <div class="cert-name">Linux RedHat Administration</div>
-                    <div class="cert-provider">Red Hat</div>
-                    <div class="cert-year">RHCSA Track</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">S</div>
-                    <div class="cert-name">Sophos Certified Engineer</div>
-                    <div class="cert-provider">Sophos</div>
-                    <div class="cert-year">Network Security</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">V</div>
-                    <div class="cert-name">VMware Certified Technical Associate</div>
-                    <div class="cert-provider">VMware</div>
-                    <div class="cert-year">VCTA-DCV</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">
-                        <i class="fas fa-cloud"></i>
-                    </div>
-                    <div class="cert-name">HCIA Cloud Computing</div>
-                    <div class="cert-provider">Huawei</div>
-                    <div class="cert-year">Jul 2025 - Aug 2025</div>
-                </div>
-
-                <div class="certification-card fade-in">
-                    <div class="cert-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="cert-name">HCIA Big Data</div>
-                    <div class="cert-provider">Huawei - NTI</div>
-                    <div class="cert-year">Jul 2021 - Sep 2021</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Footer / Contact -->
     <footer class="footer" id="contact">
         <div class="container">
             <div class="footer-content">
-                <h3>Ready to Transform Your Infrastructure</h3>
+                <h3>Get In Touch</h3>
                 <p style="font-size: 1.3rem; opacity: 0.9; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                    IT Manager & DevOps Expert with 6+ years of proven expertise in AWS, automation, and team leadership
+                    IT Manager & DevOps Expert with proven expertise in AWS, automation, and team leadership
                 </p>
                 
                 <div class="footer-contact">
@@ -1856,6 +2382,9 @@
                     <a href="https://www.linkedin.com/in/ehab-mokhtar-25ih5/" target="_blank" class="social-link" title="LinkedIn">
                         <i class="fab fa-linkedin"></i>
                     </a>
+                    <a href="https://github.com/ihabmo5tar25" target="_blank" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
                     <a href="mailto:ihabmo5tar25@gmail.com" class="social-link" title="Email">
                         <i class="fas fa-envelope"></i>
                     </a>
@@ -1871,7 +2400,7 @@
                     <p style="opacity: 0.8; margin-bottom: 1rem;">&copy; 2024 Ihab Mokhtar Bayoumi. All rights reserved.</p>
                     <p style="opacity: 0.7; font-size: 0.95rem;">Passionate about cloud technologies, automation, and continuous learning</p>
                     <p style="opacity: 0.7; font-size: 0.95rem; margin-top: 0.5rem;">
-                        <strong>Status:</strong> Actively seeking new IT Management and Cloud Architecture opportunities
+                        <strong>Status:</strong> Open to new IT Management and Cloud Architecture opportunities
                     </p>
                 </div>
             </div>
@@ -1879,7 +2408,91 @@
     </footer>
 
     <script>
-        // Tab functionality
+        // Enhanced CV Download Function
+        function downloadCV() {
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = 'cv.pdf'; // CV file from same repository
+            link.download = 'Ihab_Mokhtar_IT_Manager_CV.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Show download message
+            console.log('CV download initiated from repository');
+        }
+
+        // Enhanced PDF Portfolio Download Function
+        async function downloadPortfolioPDF() {
+            try {
+                // Show loading state
+                const btn = document.querySelector('.pdf-download-btn');
+                const originalContent = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+                btn.disabled = true;
+
+                // Hide the PDF button temporarily
+                btn.style.display = 'none';
+
+                // Configure html2canvas options for better quality
+                const canvas = await html2canvas(document.body, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    height: document.body.scrollHeight,
+                    width: document.body.scrollWidth
+                });
+
+                // Show the button again
+                btn.style.display = 'flex';
+
+                // Create PDF with jsPDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 295; // A4 height in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+
+                let position = 0;
+
+                // Add first page
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                // Add additional pages if needed
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                // Save the PDF
+                pdf.save('Ihab_Mokhtar_Portfolio.pdf');
+
+                // Reset button
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+
+                console.log('Portfolio PDF generated successfully');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                
+                // Reset button on error
+                const btn = document.querySelector('.pdf-download-btn');
+                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Download Portfolio PDF';
+                btn.disabled = false;
+                btn.style.display = 'flex';
+                
+                alert('Error generating PDF. Please try again or contact me directly for the portfolio.');
+            }
+        }
+
+        // Skills Tab functionality
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
@@ -1896,17 +2509,36 @@
             evt.currentTarget.classList.add("active");
         }
 
+        // Certifications Tab functionality
+        function openCertTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("cert-tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("cert-tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Mobile menu functionality
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const navLinks = document.getElementById('navLinks');
             
-            mobileMenuToggle.addEventListener('click', function() {
-                navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-                const icon = this.querySelector('i');
-                icon.classList.toggle('fa-bars');
-                icon.classList.toggle('fa-times');
-            });
+            if (mobileMenuToggle && navLinks) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+                    const icon = this.querySelector('i');
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
+                });
+            }
 
             // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1920,7 +2552,7 @@
                         });
                         
                         // Close mobile menu if open
-                        if (window.innerWidth <= 768) {
+                        if (window.innerWidth <= 768 && navLinks) {
                             navLinks.style.display = 'none';
                             const icon = mobileMenuToggle.querySelector('i');
                             icon.classList.add('fa-bars');
@@ -2022,27 +2654,29 @@
             });
 
             // Enhanced hover effects for interactive elements
-            document.querySelectorAll('.timeline-content, .internship-content, .project-card, .certification-card, .skills-category').forEach(item => {
+            document.querySelectorAll('.timeline-content, .project-card, .certification-card, .skills-category').forEach(item => {
                 item.addEventListener('mouseenter', function() {
                     this.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                 });
             });
 
-            // Typing effect for hero title
-            const heroTitle = document.querySelector('.hero h1');
-            const originalText = heroTitle.textContent;
-            heroTitle.textContent = '';
-            
-            setTimeout(() => {
-                let i = 0;
-                const typeInterval = setInterval(() => {
-                    heroTitle.textContent += originalText.charAt(i);
-                    i++;
-                    if (i > originalText.length - 1) {
-                        clearInterval(typeInterval);
-                    }
-                }, 100);
-            }, 1000);
+            // Typing effect for hero name
+            const heroName = document.querySelector('.hero-name');
+            if (heroName) {
+                const originalText = heroName.textContent;
+                heroName.textContent = '';
+                
+                setTimeout(() => {
+                    let i = 0;
+                    const typeInterval = setInterval(() => {
+                        heroName.textContent += originalText.charAt(i);
+                        i++;
+                        if (i > originalText.length - 1) {
+                            clearInterval(typeInterval);
+                        }
+                    }, 100);
+                }, 1000);
+            }
 
             // Parallax effect for hero section
             window.addEventListener('scroll', function() {
@@ -2054,10 +2688,11 @@
             });
 
             console.log('🚀 Ihab Mokhtar\'s Enhanced Portfolio loaded successfully!');
-            console.log('💼 IT Manager & DevOps Engineer');
+            console.log('💼 IT Manager & DevOps Engineer Trainee');
             console.log('📧 Contact: ihabmo5tar25@gmail.com');
+            console.log('🔗 GitHub: https://github.com/ihabmo5tar25');
         });
     </script>
 </body>
 </html>
-                            
+                
